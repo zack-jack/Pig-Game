@@ -10,9 +10,15 @@
  *   added to his GLBAL score. After that, it's the next player's turn
  * - The first player to reach 100 points on GLOBAL score wins the game
  *
+ *
+ * ADDED RULES:
+ *
+ * - If the player rolls a 6 two times in a row, the player loses their turn and
+ *   their ENTIRE score is then reset to 0.
+ *
  */
 
-var scores, roundScore, activePlayer, gamePlaying;
+var scores, roundScore, activePlayer, gamePlaying, previousDiceRoll;
 
 // Function to initialize a new game
 function init() {
@@ -80,7 +86,13 @@ document.querySelector(".btn-roll").addEventListener("click", function() {
     document.querySelector("#current-" + activePlayer).textContent = dice;
 
     // 3. Update the round score IF the rolled number is NOT a 1
-    if (dice !== 1) {
+    if (dice === 6 && previousDiceRoll === 6) {
+      // Player loses ENTIRE score
+      scores[activePlayer] = 0;
+      document.querySelector("#score-" + activePlayer).textContent = 0;
+      // Player loses turn
+      nextPlayer();
+    } else if (dice !== 1) {
       // Add score
       roundScore += dice;
       document.querySelector(
@@ -90,6 +102,9 @@ document.querySelector(".btn-roll").addEventListener("click", function() {
       // Next player's turn
       nextPlayer();
     }
+
+    // Sets the variable for the previous dice roll to the random dice value rolled
+    previousDiceRoll = dice;
   }
 });
 
