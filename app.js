@@ -26,6 +26,24 @@ document.getElementById("score-1").textContent = "0";
 document.getElementById("current-0").textContent = "0";
 document.getElementById("current-1").textContent = "0";
 
+// Toggles to next player and resets current score to 0
+function nextPlayer() {
+  // Next player's turn
+  activePlayer === 0 ? (activePlayer = 1) : (activePlayer = 0);
+  roundScore = 0;
+
+  // Resets CURRENT score to zero
+  document.getElementById("current-0").textContent = "0";
+  document.getElementById("current-1").textContent = "0";
+
+  // Toggle active player status to show in UI
+  document.querySelector(".player-0-panel").classList.toggle("active");
+  document.querySelector(".player-1-panel").classList.toggle("active");
+
+  // Hides the dice img in the initial state once the player switches turns
+  document.querySelector(".dice").style.display = "none";
+}
+
 // Roll Dice
 document.querySelector(".btn-roll").addEventListener("click", function() {
   // 1. Generate random dice number
@@ -44,18 +62,25 @@ document.querySelector(".btn-roll").addEventListener("click", function() {
     document.querySelector("#current-" + activePlayer).textContent = roundScore;
   } else {
     // Next player's turn
-    activePlayer === 0 ? (activePlayer = 1) : (activePlayer = 0);
-    roundScore = 0;
+    nextPlayer();
+  }
+});
 
-    // Resets CURRENT score to zero
-    document.getElementById("current-0").textContent = "0";
-    document.getElementById("current-1").textContent = "0";
+// Hold button
+document.querySelector(".btn-hold").addEventListener("click", function() {
+  // Add CURRENT score to GLOBAL score
+  scores[activePlayer] += roundScore;
 
-    // Toggle active player status to show in UI
-    document.querySelector(".player-0-panel").classList.toggle("active");
-    document.querySelector(".player-1-panel").classList.toggle("active");
+  // Update the UI
+  document.querySelector("#score-" + activePlayer).textContent =
+    scores[activePlayer];
 
-    // Hides the dice img in the initial state once the player switches turns
+  // Check if the player has won the game
+  if (scores[activePlayer] >= 100) {
+    document.querySelector("#name-" + activePlayer).textContent = "Winner!";
     document.querySelector(".dice").style.display = "none";
+  } else {
+    // Next player's turn
+    nextPlayer();
   }
 });
