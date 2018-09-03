@@ -118,8 +118,18 @@ document.querySelector(".btn-hold").addEventListener("click", function() {
     document.querySelector("#score-" + activePlayer).textContent =
       scores[activePlayer];
 
+    // Winning score input
+    var winningScoreInput = document.querySelector(".win-score").value;
+
+    // Check if input variable is empty
+    if (winningScoreInput) {
+      var winningScore = winningScoreInput;
+    } else {
+      winningScore = 100;
+    }
+
     // Check if the player has won the game
-    if (scores[activePlayer] >= 100) {
+    if (scores[activePlayer] >= winningScore) {
       document.querySelector("#name-" + activePlayer).textContent = "Winner!";
       document.querySelector(".dice").style.display = "none";
       document
