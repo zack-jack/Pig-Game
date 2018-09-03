@@ -12,13 +12,14 @@
  *
  */
 
-var scores, roundScore, activePlayer;
+var scores, roundScore, activePlayer, gamePlaying;
 
-// Initializes a new game
+// Function to initialize a new game
 function init() {
   scores = [0, 0];
   roundScore = 0;
   activePlayer = 0;
+  gamePlaying = true;
 
   // Hides the dice img in the beginning
   document.querySelector(".dice").style.display = "none";
@@ -68,48 +69,57 @@ function nextPlayer() {
 
 // Roll Dice
 document.querySelector(".btn-roll").addEventListener("click", function() {
-  // 1. Generate random dice number
-  var dice = Math.floor(Math.random() * 6) + 1;
+  if (gamePlaying) {
+    // 1. Generate random dice number
+    var dice = Math.floor(Math.random() * 6) + 1;
 
-  // 2. Display the result
-  var diceDOMSelector = document.querySelector(".dice");
-  diceDOMSelector.style.display = "block";
-  diceDOMSelector.src = "dice-" + dice + ".png";
-  document.querySelector("#current-" + activePlayer).textContent = dice;
+    // 2. Display the result
+    var diceDOMSelector = document.querySelector(".dice");
+    diceDOMSelector.style.display = "block";
+    diceDOMSelector.src = "dice-" + dice + ".png";
+    document.querySelector("#current-" + activePlayer).textContent = dice;
 
-  // 3. Update the round score IF the rolled number is NOT a 1
-  if (dice !== 1) {
-    // Add score
-    roundScore += dice;
-    document.querySelector("#current-" + activePlayer).textContent = roundScore;
-  } else {
-    // Next player's turn
-    nextPlayer();
+    // 3. Update the round score IF the rolled number is NOT a 1
+    if (dice !== 1) {
+      // Add score
+      roundScore += dice;
+      document.querySelector(
+        "#current-" + activePlayer
+      ).textContent = roundScore;
+    } else {
+      // Next player's turn
+      nextPlayer();
+    }
   }
 });
 
 // Hold button
 document.querySelector(".btn-hold").addEventListener("click", function() {
-  // Add CURRENT score to GLOBAL score
-  scores[activePlayer] += roundScore;
+  if (gamePlaying) {
+    // Add CURRENT score to GLOBAL score
+    scores[activePlayer] += roundScore;
 
-  // Update the UI
-  document.querySelector("#score-" + activePlayer).textContent =
-    scores[activePlayer];
+    // Update the UI
+    document.querySelector("#score-" + activePlayer).textContent =
+      scores[activePlayer];
 
-  // Check if the player has won the game
-  if (scores[activePlayer] >= 100) {
-    document.querySelector("#name-" + activePlayer).textContent = "Winner!";
-    document.querySelector(".dice").style.display = "none";
-    document
-      .querySelector(".player-" + activePlayer + "-panel")
-      .classList.add("winner");
-    document
-      .querySelector(".player-" + activePlayer + "-panel")
-      .classList.remove("active");
-  } else {
-    // Next player's turn
-    nextPlayer();
+    // Check if the player has won the game
+    if (scores[activePlayer] >= 100) {
+      document.querySelector("#name-" + activePlayer).textContent = "Winner!";
+      document.querySelector(".dice").style.display = "none";
+      document
+        .querySelector(".player-" + activePlayer + "-panel")
+        .classList.add("winner");
+      document
+        .querySelector(".player-" + activePlayer + "-panel")
+        .classList.remove("active");
+
+      // Ends the game
+      gamePlaying = false;
+    } else {
+      // Next player's turn
+      nextPlayer();
+    }
   }
 });
 
